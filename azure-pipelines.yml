@@ -20,10 +20,23 @@ steps:
 - task: Npm@1
   inputs:
     command: 'install'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'restore'
+    feedsToUse: 'select'
 - task: VSBuild@1
   inputs:
     solution: '**\*.sln'
     vsVersion: '16.0'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: 'Angular-Azure.csproj'
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: 'bin\Debug\net5.0\**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
